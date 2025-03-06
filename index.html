@@ -9,32 +9,59 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 50px;
+            background-color: #004481;
+            color: white;
         }
         #main-screen, #game-screen {
             display: none;
+            background: white;
+            color: #004481;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            margin: auto;
         }
         .correct {
-            color: green;
+            color: #28a745;
         }
         .incorrect {
-            color: red;
+            color: #dc3545;
             text-decoration: underline;
         }
         textarea {
-            width: 80%;
+            width: 90%;
             height: 120px;
             font-size: 16px;
             margin-top: 10px;
-            white-space: pre-wrap;
+            padding: 10px;
+            border: 1px solid #004481;
+            border-radius: 4px;
+            outline: none;
         }
         button {
             margin-top: 10px;
-            padding: 10px;
+            padding: 10px 15px;
             font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ff671f;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #cc5400;
         }
         .extra-small-button {
-            font-size: 8px;
-            padding: 3px 6px;
+            font-size: 10px;
+            padding: 5px 10px;
+        }
+        pre {
+            text-align: left;
+            display: inline-block;
+            white-space: pre-wrap;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -59,7 +86,7 @@ Make controls easier to activate.
 What to do
 Ensure targets meet a minimum size or have sufficient spacing around them.
 Why it's important
-Some people with physical impairments cannot click small buttons that are close together.`;
+Some people with physical impairments cannot click small buttons that are close together.`.split('\n');
         const textContainer = document.getElementById("text-container");
         const typingArea = document.getElementById("typing-area");
         const timerDisplay = document.getElementById("timer");
@@ -76,11 +103,16 @@ Some people with physical impairments cannot click small buttons that are close 
         
         function displayText() {
             textContainer.innerHTML = "";
-            for (let char of textToType) {
-                let span = document.createElement("span");
-                span.textContent = char;
-                textContainer.appendChild(span);
-            }
+            textToType.forEach(line => {
+                let lineContainer = document.createElement("div");
+                lineContainer.style.textAlign = "left";
+                line.split("").forEach(char => {
+                    let span = document.createElement("span");
+                    span.textContent = char;
+                    lineContainer.appendChild(span);
+                });
+                textContainer.appendChild(lineContainer);
+            });
         }
         
         typingArea.addEventListener("input", () => {
@@ -89,22 +121,23 @@ Some people with physical impairments cannot click small buttons that are close 
                 interval = setInterval(updateTimer, 10);
             }
             
-            let typedText = typingArea.value;
-            let spans = textContainer.querySelectorAll("span");
+            let typedLines = typingArea.value.split("\n");
+            let lineContainers = textContainer.children;
             
-            for (let i = 0; i < spans.length; i++) {
-                if (i < typedText.length) {
-                    if (typedText[i] === textToType[i]) {
-                        spans[i].className = "correct";
+            for (let lineIndex = 0; lineIndex < textToType.length; lineIndex++) {
+                let spans = lineContainers[lineIndex]?.children;
+                let typedLine = typedLines[lineIndex] || "";
+                
+                for (let charIndex = 0; charIndex < (spans?.length || 0); charIndex++) {
+                    if (charIndex < typedLine.length) {
+                        spans[charIndex].className = typedLine[charIndex] === textToType[lineIndex][charIndex] ? "correct" : "incorrect";
                     } else {
-                        spans[i].className = "incorrect";
+                        spans[charIndex].className = "";
                     }
-                } else {
-                    spans[i].className = "";
                 }
             }
             
-            if (typedText.length >= textToType.length) {
+            if (typedLines.join("\n").length >= textToType.join("\n").length) {
                 clearInterval(interval);
             }
         });

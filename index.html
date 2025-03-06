@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Typing Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #main-screen, #game-screen {
+            display: none;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+            text-decoration: underline;
+        }
+        textarea {
+            width: 80%;
+            height: 120px;
+            font-size: 16px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .extra-small-button {
+            font-size: 8px;
+            padding: 3px 6px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-screen">
+        <h1>Welcome to the Speed Typing Test</h1>
+        <p>Test your typing speed by typing the given text as fast and accurately as possible. The timer starts when you begin typing and stops when you complete the text.</p>
+        <button class="extra-small-button" onclick="startGame()">Start Game</button>
+    </div>
+    
+    <div id="game-screen">
+        <h1>Speed Typing Test</h1>
+        <pre id="text-container"></pre>
+        <textarea id="typing-area" placeholder="Start typing here..."></textarea>
+        <p id="timer">Time: 0.00s</p>
+        <button onclick="resetTest()">Reset</button>
+    </div>
+    
+    <script>
+        const textToType = `Goal
+Make controls easier to activate.
+What to do
+Ensure targets meet a minimum size or have sufficient spacing around them.
+Why it's important
+Some people with physical impairments cannot click small buttons that are close together.`;
+        const textContainer = document.getElementById("text-container");
+        const typingArea = document.getElementById("typing-area");
+        const timerDisplay = document.getElementById("timer");
+        const mainScreen = document.getElementById("main-screen");
+        const gameScreen = document.getElementById("game-screen");
+        let startTime = null;
+        let interval = null;
+        
+        function startGame() {
+            mainScreen.style.display = "none";
+            gameScreen.style.display = "block";
+            displayText();
+        }
+        
+        function displayText() {
+            textContainer.innerHTML = "";
+            for (let char of textToType) {
+                let span = document.createElement("span");
+                span.textContent = char;
+                textContainer.appendChild(span);
+            }
+        }
+        
+        typingArea.addEventListener("input", () => {
+            if (startTime === null) {
+                startTime = Date.now();
+                interval = setInterval(updateTimer, 10);
+            }
+            
+            let typedText = typingArea.value;
+            let spans = textContainer.querySelectorAll("span");
+            
+            for (let i = 0; i < spans.length; i++) {
+                if (i < typedText.length) {
+                    if (typedText[i] === textToType[i]) {
+                        spans[i].className = "correct";
+                    } else {
+                        spans[i].className = "incorrect";
+                    }
+                } else {
+                    spans[i].className = "";
+                }
+            }
+            
+            if (typedText.length >= textToType.length) {
+                clearInterval(interval);
+            }
+        });
+        
+        function updateTimer() {
+            let elapsedTime = (Date.now() - startTime) / 1000;
+            timerDisplay.innerText = `Time: ${elapsedTime.toFixed(2)}s`;
+        }
+        
+        function resetTest() {
+            clearInterval(interval);
+            startTime = null;
+            timerDisplay.innerText = "Time: 0.00s";
+            typingArea.value = "";
+            gameScreen.style.display = "none";
+            mainScreen.style.display = "block";
+        }
+        
+        mainScreen.style.display = "block";
+    </script>
+</body>
+</html>

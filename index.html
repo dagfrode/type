@@ -8,9 +8,18 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
+            margin: 0;
             background-color: #004481;
             color: white;
+        }
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('https://www.sparebank1.no/content/dam/sparebank1/global/logos/wave.svg') repeat-x;
+            background-size: cover;
         }
         #main-screen, #game-screen {
             display: none;
@@ -21,6 +30,7 @@
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             width: 50%;
             margin: auto;
+            margin-top: 50px;
         }
         .correct {
             color: #28a745;
@@ -38,6 +48,9 @@
             border: 1px solid #004481;
             border-radius: 4px;
             outline: none;
+        }
+        textarea:focus {
+            border-color: #ff671f;
         }
         button {
             margin-top: 10px;
@@ -67,26 +80,22 @@
 </head>
 <body>
     <div id="main-screen">
-        <h1>Welcome to the Speed Typing Test</h1>
-        <p>Test your typing speed by typing the given text as fast and accurately as possible. The timer starts when you begin typing and stops when you complete the text.</p>
-        <button class="extra-small-button" onclick="startGame()">Start Game</button>
+        <h1>Velkommen til Skrivehastighetstesten</h1>
+        <p>Test din skrivehastighet ved å skrive den gitte teksten så raskt og nøyaktig som mulig. Timeren starter når du begynner å skrive og stopper når du er ferdig.</p>
+        <button class="extra-small-button" onclick="startGame()">Start test</button>
     </div>
     
     <div id="game-screen">
-        <h1>Speed Typing Test</h1>
+        <h1>Skrivehastighetstest</h1>
         <pre id="text-container"></pre>
-        <textarea id="typing-area" placeholder="Start typing here..."></textarea>
-        <p id="timer">Time: 0.00s</p>
-        <button onclick="resetTest()">Reset</button>
+        <textarea id="typing-area" placeholder="Start å skrive her..." onpaste="return false;"></textarea>
+        <p id="timer">Tid: 0.00s</p>
+        <button onclick="resetTest()">Tilbake</button>
     </div>
+    <div class="wave"></div>
     
     <script>
-        const textToType = `Goal
-Make controls easier to activate.
-What to do
-Ensure targets meet a minimum size or have sufficient spacing around them.
-Why it's important
-Some people with physical impairments cannot click small buttons that are close together.`.split('\n');
+        const textToType = `Sikre at interaktive elementer er store nok til å klikkes eller har nok avstand. Dette hjelper brukere med motoriske utfordringer å navigere enklere.`.split('\n');
         const textContainer = document.getElementById("text-container");
         const typingArea = document.getElementById("typing-area");
         const timerDisplay = document.getElementById("timer");
@@ -144,13 +153,13 @@ Some people with physical impairments cannot click small buttons that are close 
         
         function updateTimer() {
             let elapsedTime = (Date.now() - startTime) / 1000;
-            timerDisplay.innerText = `Time: ${elapsedTime.toFixed(2)}s`;
+            timerDisplay.innerText = `Tid: ${elapsedTime.toFixed(2)}s`;
         }
         
         function resetTest() {
             clearInterval(interval);
             startTime = null;
-            timerDisplay.innerText = "Time: 0.00s";
+            timerDisplay.innerText = "Tid: 0.00s";
             typingArea.value = "";
             gameScreen.style.display = "none";
             mainScreen.style.display = "block";
